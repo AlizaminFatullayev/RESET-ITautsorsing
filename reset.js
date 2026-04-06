@@ -40,8 +40,50 @@ document.querySelectorAll('.service-card, .price-card, .process-item').forEach(e
 });
 
 // Form submit
-document.querySelector('.form-submit').addEventListener('click', function() {
-  this.textContent = '✓ Göndərildi — Tezliklə əlaqə saxlayacağıq';
-  this.style.background = '#00C97A';
-  this.disabled = true;
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.querySelector('.form-submit');
+  const form = this;
+
+  btn.textContent = 'Göndərilir...';
+  btn.disabled = true;
+
+  const data = {
+    name: form.name.value.trim(),
+    company: form.company.value.trim(),
+    email: form.email.value.trim(),
+    package: form.package.value,
+    note: form.note.value.trim(),
+  };
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      btn.textContent = '✓ Göndərildi — Tezliklə əlaqə saxlayacağıq';
+      btn.style.background = '#00C97A';
+      form.reset();
+    } else {
+      const err = await res.json();
+      btn.textContent = '✗ Xəta baş verdi — Yenidən cəhd edin';
+      btn.style.background = '#ff4444';
+      btn.disabled = false;
+      setTimeout(() => {
+        btn.textContent = 'Pulsuz Konsultasiya →';
+        btn.style.background = '';
+      }, 3000);
+    }
+  } catch (err) {
+    btn.textContent = '✗ Xəta baş verdi — Yenidən cəhd edin';
+    btn.style.background = '#ff4444';
+    btn.disabled = false;
+    setTimeout(() => {
+      btn.textContent = 'Pulsuz Konsultasiya →';
+      btn.style.background = '';
+    }, 3000);
+  }
 });
