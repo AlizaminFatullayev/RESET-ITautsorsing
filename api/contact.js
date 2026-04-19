@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
     });
     res.json({ success: true });
   } catch (err) {
-    console.error('Mail göndərmə xətası:', err.message);
-    res.status(500).json({ error: 'Mail göndərilə bilmədi.' });
+    console.error('Mail göndərmə xətası:', err.message, err);
+    res.status(500).json({ error: err.message || 'Mail göndərilə bilmədi.' });
   }
 };

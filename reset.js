@@ -69,7 +69,7 @@ document.getElementById('contactForm').addEventListener('submit', async function
       form.reset();
     } else {
       const err = await res.json();
-      btn.textContent = '✗ Xəta baş verdi — Yenidən cəhd edin';
+      btn.textContent = '✗ ' + (err.error || 'Xəta baş verdi');
       btn.style.background = '#ff4444';
       btn.disabled = false;
       setTimeout(() => {
