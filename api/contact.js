@@ -1,16 +1,21 @@
-require('dotenv').config();
-const express = require('express');
-const path = require('path');
 const { Resend } = require('resend');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
-app.post('/api/contact', async (req, res) => {
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   const { name, company, email, package: pkg, note } = req.body;
 
   if (!name || !email) {
@@ -39,17 +44,4 @@ app.post('/api/contact', async (req, res) => {
     console.error('Mail göndərmə xətası:', err.message);
     res.status(500).json({ error: 'Mail göndərilə bilmədi.' });
   }
-});
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-app.listen(PORT, () => {
-  console.log(`Server ${PORT} portunda işləyir → http://localhost:${PORT}`);
-});
+};
