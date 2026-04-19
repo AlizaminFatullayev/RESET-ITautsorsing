@@ -57,7 +57,7 @@ document.getElementById('contactForm').addEventListener('submit', async function
   };
 
   try {
-    const res = await fetch('/api/contact', {
+    const res = await fetch('https://formspree.io/f/xgoryqdz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
